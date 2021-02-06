@@ -1,12 +1,13 @@
-def reverse_dict1(d):
+def reverse_dict(d):
     old_values = list(d.values())
 
     new_keys = set([item for sublist in old_values for item in sublist])
     new_values = []
 
     for key in new_keys:
+        # a = [list(d.keys())[j] for j, value in enumerate(d.values()) if key in value]
         a = []
-        for j, value in enumerate(d.values()):
+        for j, value in enumerate(old_values):
             if key in value:
                 a.append(list(d.keys())[j])
 
@@ -15,14 +16,14 @@ def reverse_dict1(d):
     return dict([i, j] for i, j in zip(new_keys, new_values))
 
 
-def reverse_dict(d):
+def reverse_dictwrong(d):
     rd = dict()
     for key, values in d.items():
         for val in values:
             if val in rd:
                 rd[val].append(key)
             else:
-                rd[val] = [key]     
+                rd[val] = [key]   
     return rd
 
 def test_reverse_small_dict():
