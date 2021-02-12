@@ -15,6 +15,9 @@
 #include<vector>
 #include<algorithm>
 #include<iterator>
+#include"node.h"
+#include"iterators.h"
+
 
 template<class K, class V, class CO=std::less<K>>
 class bst
@@ -27,7 +30,7 @@ class bst
     std::unique_ptr<node> root;
 
     public:
-
+    CO comp;
     template<class oK, class oV>
     class _iterator;
 
@@ -51,6 +54,10 @@ class bst
     	return *this;
 
     }
+    std::pair<iterator, bool> insert(pair&& x);
+    void newbalancedtree (std::vector<pair>& v, int first, int last);  // da mettere forse in private??
+    void balance();
+
 
 };
 
@@ -149,7 +156,7 @@ class bst<K,V,CO>::_iterator {
 
 	    bool operator==(const _iterator& other_it) {return here==other_it.here;}
 
-	    bool operator!=(const _iterator& other_it) {return !(*this==other_it);}
+	    bool operator!=(const _iterator& other_it) {return *this != other_it;}
 
 	    reference operator*() {return here->data;}
 
@@ -161,7 +168,7 @@ class bst<K,V,CO>::_iterator {
 
 
 
-
+#include"methods.h"
 
 
 

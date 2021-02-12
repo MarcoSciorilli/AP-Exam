@@ -15,7 +15,7 @@
 template<class N>
 class iterator {
 
-    node<N>* here;
+    node<N>* here{};
 
     public:
 
@@ -27,7 +27,7 @@ class iterator {
 
     iterator& operator++() {
         if(here) {
-            if(here->right) { 
+            if(here->right) {
                 here=here->right->findLowest();
             } else {
                 here = here->findUpper();
