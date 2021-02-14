@@ -57,6 +57,7 @@ class bst
     std::pair<iterator, bool> insert(pair&& x);
     void newbalancedtree (std::vector<pair>& v, int first, int last);  // da mettere forse in private??
     void balance();
+    void erase(K& key);
 
 
 };
