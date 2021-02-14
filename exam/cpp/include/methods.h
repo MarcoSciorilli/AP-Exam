@@ -87,7 +87,7 @@ void bst<K, V, CO>::newbalancedtree(std::vector<pair> &v, int first, int last) {
 
 
 template<class K, class V, class CO>
-void bst<K, V, CO>::erase(K& key) {
+void bst<K, V, CO>::erase(key_type& key) {
 
     iterator my{find(key)}; //have to return the one with no left child
     if(my == end()) {std::cout<<"key is not in the tree"<<std::endl;}
