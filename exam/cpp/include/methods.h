@@ -99,11 +99,11 @@ void bst<K, V, CO>::erase(key_type& key) {
         return;
     }
     if(here->left== nullptr) {          //if no left child, substitute with left
-        trasplante(here->data.first, here->right->data.first);
+        transplant(here->data.first, here->right->data.first);
         return;
     }
     if(here->right== nullptr) {         //if no left child, substitute with left
-        trasplante(here->data.first, here->left->data.first);
+        transplant(here->data.first, here->left->data.first);
         return;
     }
     else{
