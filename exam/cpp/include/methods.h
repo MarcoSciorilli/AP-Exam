@@ -238,7 +238,8 @@ void bst<K, V, CO>::erase(const key_type &key){
                 return;
             }
         }
-        if(here->left.get()== nullptr &&(here->right.get()!= nullptr)) {
+
+        if(here->left.get() && !(here->right.get()!)) {
             std::cout<<"one right child"<<std::endl;//if no left child, substitute with left
             transplant(here->data.first, here->right.get()->data.first);
             return;
