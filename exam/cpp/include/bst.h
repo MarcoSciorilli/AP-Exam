@@ -15,22 +15,30 @@
 #include<vector>
 #include<algorithm>
 #include<iterator>
-#include"node.h"
-#include"iterators.h"
-
 
 template<class K, class V, class CO=std::less<K>>
 class bst
 {
 
-	using pair=std::pair<K,V>;
+    using pair_type=std::pair<const K,V>;
+    using key_type=K;
+    using value_type=V;
+    using reference=V&;
 
     struct node;
 
     std::unique_ptr<node> root;
 
-    public:
+    void transplant(const key_type& x,const key_type& y);
+
+    void new_child(const key_type& x,const key_type& y,bool side);
+
+    bool child_side(const key_type& x);
+
+public:
+
     CO comp;
+
     template<class oK, class oV>
     class _iterator;
 
@@ -39,26 +47,87 @@ class bst
 
     bst()=default;
 
+    explicit bst(const pair_type& pair) { root.reset(new node{pair}); }
+
+    explicit bst(pair_type&& pair) { root.reset(new node{std::move(pair)}); }
+
+    bst(key_type&& _key, value_type&& _value) {
+
+        root.reset(new node{std::make_pair(_key, _value)});
+
+    }
+
     ~bst()=default;
 
     bst(const bst& to_copy) {
 
-    	if(to_copy.root) { root.reset(new node{to_copy.root}); }
+        if(to_copy.root) { root.reset(new node{to_copy.root}); }
 
     }
 
     bst& operator=(const bst& to_copy) {
 
-    	auto auxiliary{to_copy};
-    	*this=std::move(auxiliary);
-    	return *this;
+        auto auxiliary{to_copy};
+        *this=std::move(auxiliary);
+        return *this;
 
     }
-    std::pair<iterator, bool> insert(pair&& x);
-    void newbalancedtree (std::vector<pair>& v, int first, int last);  // da mettere forse in private??
-    void balance();
-    void erase(K& key);
 
+    bst(bst&& move_from): root(std::move(move_from.root)) { move_from.root.reset(nullptr); }
+
+    bst& operator=(bst&& move_from) {
+
+        root=std::move(move_from.root);
+        move_from.root.reset(nullptr);
+        return *this;
+
+    }
+
+    std::pair<iterator, bool> insert(const pair_type& x);
+
+    std::pair<iterator, bool> insert(pair_type&& x);
+
+    template<class... Types>
+    std::pair<iterator,bool> emplace(Types&&... args);
+
+    iterator begin() noexcept;
+
+    const_iterator cbegin() const noexcept;
+
+    iterator end() noexcept;
+
+    const_iterator cend() const noexcept;
+
+    iterator find(const key_type& x);
+
+    const_iterator find(const key_type& x) const;
+
+    friend
+    std::ostream &operator<<(std::ostream &os, const bst &x) {
+        for (auto p = x.cbegin(); p != x.cend(); ++p) {
+            os << p << "\n";
+        }
+        os << std::endl;
+        return os;
+    }
+
+    friend
+    auto get_root(const bst& x) {
+
+        auto root_info=std::make_pair(x.root->data.first, x.root->data.second);
+        return root_info;
+
+    }
+
+    reference operator[](const key_type& x);
+
+    reference operator[](key_type&& x);
+
+    void clear();
+
+    void erase_node(typename bst<K,V,CO>::node* N);
+
+    void erase(const key_type& key);
 
 };
 
@@ -69,7 +138,7 @@ class bst
 template<class K, class V, class CO>
 struct bst<K,V,CO>::node {
 
-    pair data;
+    pair_type data;
 
     std::unique_ptr<node> left;
 
@@ -79,34 +148,42 @@ struct bst<K,V,CO>::node {
 
     node()=default;
 
-    explicit node(pair n): data{n}, left{nullptr}, right{nullptr}, parent{nullptr} {}
+    explicit node(const pair_type& n): data{n}, left{nullptr}, right{nullptr}, parent{nullptr} {}
 
-    node(pair n, node* new_parent): data{n},  left{nullptr}, right{nullptr}, parent{new_parent} {}
+    node(const pair_type& n, node* new_parent): data{n},  left{nullptr}, right{nullptr}, parent{new_parent} {}
 
     ~node() noexcept=default;
 
     explicit node(const std::unique_ptr<node>& copy_from):
-    data{copy_from->data}, left{nullptr}, right{nullptr}, parent{nullptr} {
+            data{copy_from->data}, left{nullptr}, right{nullptr}, parent{nullptr} {
 
-    	if(copy_from->left) { left.reset(new node{copy_from->left}); }
-    	if(copy_from->right) { left.reset(new node{copy_from->right}); }
+        if(copy_from->left) { left.reset(new node{copy_from->left}); }
+
+        if(copy_from->right) { left.reset(new node{copy_from->right}); }
 
     }
 
     node* findLowest() noexcept {
 
-        if(left) return left->findLowest();
+        if(left) { return left->findLowest(); }
         return this;
 
     }
 
-    node* findUpper() noexcept {
+    node* findUpper() {
 
-        if(parent){
-            if(parent->left==this) return parent;
+        if(parent) {
+            if(parent->left.get()==this) { return parent; }
             return parent->findUpper();
         }
-    	return parent;
+        return parent;
+
+    }
+
+    node* rightmost() {
+
+        if(right) { return right->rightmost(); }
+        return right.get();
 
     }
 
@@ -120,57 +197,70 @@ template<class K, class V, class CO>
 template<class oK, class oV>
 class bst<K,V,CO>::_iterator {
 
-	//using node=typename bst<K,V,CO>::node;
+    //using node=typename bst<K,V,CO>::node;
+
+    friend class bst;
 
     node* here;
 
-    public:
+public:
 
-    	using value_type=std::pair<oK,oV>;
-    	using reference=value_type&;
-    	using pointer=value_type*;
-    	using difference_type=std::ptrdiff_t;
-    	using iterator_category=std::forward_iterator_tag;
+    using value_type=std::pair<oK,oV>;
+    using reference=value_type&;
+    using pointer=value_type*;
+    using difference_type=std::ptrdiff_t;
+    using iterator_category=std::forward_iterator_tag;
 
-	    _iterator()=default;
+    _iterator()=default;
 
-	    explicit _iterator(node* p): here{p} {}
+    explicit _iterator(node* p): here{p} {}
 
-	    ~_iterator()=default;
+    _iterator(const _iterator& other_it): here{other_it.here} {}
 
-	    _iterator& operator++() {
-	        if(here) {
-	            if(here->right) { 
-	                here=here->right->findLowest();
-	            } else {
-	                here = here->findUpper();
-	            }
-	        }
-	        return *this;
-	    }
+    ~_iterator()=default;
 
-	    _iterator operator++(int) {
-	        auto old(*this);
-	        operator++();
-	        return old;
-	    }
+    _iterator& operator++() {
+        if(here) {
+            if(here->right) {
+                here=here->right->findLowest();
+            } else {
+                here = here->findUpper();
+            }
+        }
+        return *this;
+    }
 
-	    bool operator==(const _iterator& other_it) {return here==other_it.here;}
+    _iterator operator++(int) {
+        auto old(*this);
+        operator++();
+        return old;
+    }
 
-	    bool operator!=(const _iterator& other_it) {return *this != other_it;}
+    bool operator==(const _iterator& other_it) const {return here==other_it.here;}
 
-	    reference operator*() {return here->data;}
+    bool operator!=(const _iterator& other_it) const {return !(*this==other_it);}
 
-	    pointer operator->() {return &(*(*this));}
+    reference operator*() {return here->data;}
 
+    pointer operator->() {return &(*(*this));}
+
+    friend
+    std::ostream &operator<<(std::ostream &os, const _iterator& it) {
+        os << "(" << "key: " << it.here->data.first << ", value: " << it.here->data.second << ")";
+        return os;
+    }
 
 };
 
 
 
 
-#include"methods.h"
 
+
+
+
+
+#include"methods.h"
 
 
 
