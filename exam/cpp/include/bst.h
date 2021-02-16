@@ -345,20 +345,24 @@ void bst<K, V, CO>::erase(const key_type &key){
 //************************************************
 
 template<class K, class V, class CO>
-void bst<K, V, CO>::transplant(const key_type& x,const key_type& y) {
+void bst<K, V, CO>::transplant(const key_type& x,const key_type& y)
+    //Get the pointers to the target node, and to the substitute node
     iterator one{find(x)};
     iterator two{find(y)};
     node* here_one = one.here;
     node* here_two = two.here;
+    //If the target node is the root, reset to root to substitute, and erase the target
     if(!(here_one->parent)){
         root.release();
         root.reset(here_two);
         erase_node(here_one);
     }
     else{
+        //Get the side of the target relative to its parent
         bool side{child_side(here_one->data.first)};
+        //Set the substitute as child of the right child to the parent of the target
         new_child(here_one->parent->data.first,here_two->data.first, side);
-        std::cout<<here_two->data.first<<std::endl;
+        //Erase target
         erase_node(here_one);
     }
 }
@@ -369,18 +373,22 @@ void bst<K, V, CO>::transplant(const key_type& x,const key_type& y) {
 
 template<class K, class V, class CO>
 void bst<K, V, CO>::new_child(const key_type& x,const key_type& y,bool side) {
+    //Get the pointers to the parent node, to the child node, and to the side to set the child
     iterator one{find(x)};
-    iterator two{find(y)};//have to return the one with no left child
+    iterator two{find(y)};
     node* here_one = one.here;
     node* here_two = two.here;
+    //If it is the left side, reset parent's left node to child node
     if(!side){
         here_one->left.release();
         here_one->left.reset(here_two);
     }
+    //If it is the right side, reset parent's right node to child node
     else{
         here_one->right.release();
         here_one->right.reset(here_two);
     }
+    //Set child's parent node to parent
     here_two->parent= here_one;
 }
 
@@ -389,11 +397,14 @@ void bst<K, V, CO>::new_child(const key_type& x,const key_type& y,bool side) {
 //************************************************
 template<class K, class V, class CO>
 bool bst<K, V, CO>::child_side(const key_type &x) {
+    //Find the pointer to the node
     iterator my{find(x)};
     node* current = my.here;
+    //If the node is a right child, return true
     if (current->parent->right.get() == current){
         return true;
     }
+    //If the node is a left child, return false
     else{
         return false;
     }
@@ -404,6 +415,7 @@ bool bst<K, V, CO>::child_side(const key_type &x) {
 //************************************************
 template<class K, class V, class CO>
 void bst<K, V, CO>::erase_node(bst<K, V, CO>::node *N) {
+    //Erase node's left, right and parent node
     N->left.release();
     N->right.release();
     N->parent=nullptr;
