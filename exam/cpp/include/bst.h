@@ -262,13 +262,15 @@ void bst<K, V, CO>::erase(const key_type &key){
         else{
             //Find the node with the smallest key on the right branch of the node, and I call it "smaller"
             node* smaller=here->right.get()->findLowest();
-            //If smaller is the right node of its parent, reset its left node to the left node of here, and reset to smaller the parent of the left node of here
+            //If smaller is the right node of its parent
             if(child_side(smaller->data.first)){
+                //Reset smaller's left node to here's left node
                 smaller->left.release();
                 smaller->left.reset(here->left.get());
+                //Reset here's left node parent to smaller
                 here->left.get()->parent = smaller;
             }
-                //If smaller is the left node of its parent
+            //If smaller is the left node of its parent
             else {
                 //If smaller has a right node, and here is not its parent
                 if (smaller->right.get() && here->left.get() != smaller) {
