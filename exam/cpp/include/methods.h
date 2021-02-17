@@ -171,6 +171,17 @@ std::pair<typename bst<K, V, CO>::iterator, bool> bst<K, V, CO>::insert(pair_typ
 
 }
 
+//*********************************************
+//******************EMPLACE********************
+//*********************************************
+
+template <class K, class V, class CO>
+template<class... Types>
+std::pair<typename bst<K, V, CO>::iterator, bool> bst<K, V, CO>::emplace(Types&&... args) {
+
+    return insert(std::make_pair<const K, V>(std::forward<Types>(args)...));
+
+}
 
 //************************************************
 //******************ERASE********************
@@ -287,7 +298,7 @@ void bst<K, V, CO>::erase(const key_type &key){
                 }
                 //Set smaller's parent node to here's parent node
                 smaller->parent=here->parent;
-                //Erease here
+                //Erase here
                 erase_node(here);
                 return;
             }
@@ -369,16 +380,18 @@ bool bst<K, V, CO>::child_side(const key_type &x) {
 //************************************************
 //******************ERASE_NODE********************
 //************************************************
+
+
 template<class K, class V, class CO>
-void bst<K, V, CO>::erase_node(bst<K, V, CO>::node *N) {
+void bst<K, V, CO>::erase_node(bst::node *N) {
     //Erase node's left, right and parent node
     N->left.release();
     N->right.release();
     N->parent=nullptr;
+    delete N;
 }
 
 
-#endif //__METHODS_
 //************************************************
 //********************BALANCE*********************
 //************************************************

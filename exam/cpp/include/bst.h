@@ -17,6 +17,7 @@
 #include<iterator>
 #include<string>
 
+
 /**
  * \brief Implementation of the type: binary search tree
  * \tparam K    Key type
@@ -479,13 +480,8 @@ public:
 
 
 
-
-
-
-
-
-
 #include"methods.h"
+
 
 
 
