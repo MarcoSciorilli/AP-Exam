@@ -254,6 +254,7 @@ public:
     /**
      * \brief Given a key of a node, it returns the side of the node relative to its parent
      * \param x     Key of the node
+     * \return A boolean: false if the node is on the left side, true if the node is on the right side
      */
 
     bool child_side(const key_type &x);
