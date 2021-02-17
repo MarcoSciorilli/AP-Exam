@@ -265,7 +265,7 @@ void bst<K, V, CO>::erase(const key_type &key){
             //If here is a root
             if(!(here->parent)){
                 //Set smaller parent to nullpointer, reset root to smaller, and erase here
-                smaller->parent== nullptr;
+                smaller->parent=nullptr;
                 root.release();
                 root.reset(smaller);
                 erase_node(here);
@@ -301,7 +301,7 @@ void bst<K, V, CO>::erase(const key_type &key){
 //************************************************
 
 template<class K, class V, class CO>
-void bst<K, V, CO>::transplant(const key_type& x,const key_type& y)
+void bst<K, V, CO>::transplant(const key_type& x,const key_type& y){
 //Get the pointers to the target node, and to the substitute node
 iterator one{find(x)};
 iterator two{find(y)};
