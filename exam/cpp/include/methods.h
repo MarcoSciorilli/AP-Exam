@@ -188,7 +188,7 @@ std::pair<typename bst<K, V, CO>::iterator, bool> bst<K, V, CO>::emplace(Types&&
 //************************************************
 
 template<class K, class V, class CO>
-void bst<K, V, CO>::erase(const key_type &key){
+void bst<K, V, CO>::erase(const key_type &key) {
     //Get the iterator pointing to my key
     iterator my{find(key)};
     //If the key is not present in the tree, return a message
@@ -196,6 +196,10 @@ void bst<K, V, CO>::erase(const key_type &key){
     else {
         //Get a pointer to the node to erase, and call it "here"
         node *here= my.here;
+        //if the node is the root and the only node, clear the three
+        if(!(here->parent)&& !(here->right.get())&& !(here->left.get())){
+            clear();
+        }
         //Node with 0 child
         if(!(here->left.get()) && !(here->right.get())){
             //If here is a right child, release the right node of its parent, and erase it
