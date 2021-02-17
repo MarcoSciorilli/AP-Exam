@@ -313,25 +313,25 @@ void bst<K, V, CO>::erase(const key_type &key){
 
 template<class K, class V, class CO>
 void bst<K, V, CO>::transplant(const key_type& x,const key_type& y){
-//Get the pointers to the target node, and to the substitute node
-iterator one{find(x)};
-iterator two{find(y)};
-node* here_one = one.here;
-node* here_two = two.here;
-//If the target node is the root, reset to root to substitute, and erase the target
-if(!(here_one->parent)){
-root.release();
-root.reset(here_two);
-erase_node(here_one);
-}
-else{
-//Get the side of the target relative to its parent
-bool side{child_side(here_one->data.first)};
-//Set the substitute as child of the right child to the parent of the target
-new_child(here_one->parent->data.first,here_two->data.first, side);
-//Erase target
-erase_node(here_one);
-}
+    //Get the pointers to the target node, and to the substitute node
+    iterator one{find(x)};
+    iterator two{find(y)};
+    node* here_one = one.here;
+    node* here_two = two.here;
+    //If the target node is the root, reset to root to substitute, and erase the target
+    if(!(here_one->parent)){
+        root.release();
+        root.reset(here_two);
+        erase_node(here_one);
+    }
+    else{
+        //Get the side of the target relative to its parent
+        bool side{child_side(here_one->data.first)};
+        //Set the substitute as child of the right child to the parent of the target
+        new_child(here_one->parent->data.first,here_two->data.first, side);
+        //Erase target
+        erase_node(here_one);
+    }
 }
 
 //************************************************
