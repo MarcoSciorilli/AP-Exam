@@ -232,13 +232,29 @@ public:
 
     /**
      * \brief Erase a node with a given key from the tree
-     * \param key    Key of the none to be erased
+     * \param key    Key of the node to be erased
      */
     void erase(const key_type &key);
 
+    /**
+     * \brief Substitute a node with only one child with its child,taking their respective key as input
+     * \param x     Key of the node to be erased
+     * \param y     Key of the substitute node
+     */
+
     void transplant(const key_type& x,const key_type& y);
+    /**
+     * \brief Set a node as the child of a given parent node, on the given side.
+     * \param x     Key of the parent to be erased
+     * \param y     Key of the child node
+     * \param side  Side of the child node
+     */
 
     void new_child(const key_type& x,const key_type& y,bool side);
+    /**
+     * \brief Given a key of a node, it returns the side of the node relative to its parent
+     * \param x     Key of the node
+     */
 
     bool child_side(const key_type &x);
 
