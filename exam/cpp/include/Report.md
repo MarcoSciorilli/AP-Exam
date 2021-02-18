@@ -56,7 +56,7 @@ The private member `root` is used to identify the root node of the tree in a uni
     std::pair<iterator, bool> insert(pair_type&& x);
 ```
 
-
+This function is called when the user wants to insert a new node inside the BST. It takes as input an lvalue or an rvalue of a pair key/stored-value, and return an iterator pointing to the node, and a boolean stating the success of the insertion.  If the BST is empty the function insert the node as the root of the tree. Otherwise, the function navigate through the tree until it finds a suitable parent node for the given one. It then compare the key given with the one of the found parent, and set the new node as a *left* or *right* child consequently. If during this process the function finds a node with the same key, it returns an iterator pointing to that node, paired with a *false* boolean.
 
 ####  Begin 
 
@@ -122,7 +122,20 @@ Helper functions:
     void balance();
 ```
 
+This function is called when the user wants to balance the tree. It stores in an orderly fashion all the node pairs contained in the tree in vector,  it deletes the old tree using the function `clear`, and reconstructs it in a balanced way with the helper function `newbalancedtree`.
 
+Helper function:
+
+`newbalancedtree`: this function takes as input an ordered vector of pair, and two int represent the index of the first and last element of the vector on which the function works.  It computes the median value of the vector considered , and it inserts it in the new tree (with the function `insert`), recalling itself recursively on the two remaining halves of the vector.
+
+#### Child_side
+
+```c++
+//public
+    bool child_side(const key_type &x);
+```
+
+This function takes as input a key of a node, and return a boolean: *false* if the node is a left node, *true* if it is a right node. It achieves so comparing the node pointer with the left and right node pointer of its parent node. 
 
 #### Find
 
@@ -132,6 +145,8 @@ Helper functions:
     const_iterator find(const key_type& x) const;
 ```
 
+
+
 #### Copy Semantic
 
 ```
@@ -139,12 +154,6 @@ code
 ```
 
 #### Move Semantic
-
-```
-code
-```
-
-#### Child_side
 
 ```
 code
@@ -167,3 +176,53 @@ code
 ```
 code
 ```
+
+#### *Print_2D*
+
+```c++
+// public
+void print_2D();
+```
+
+This function is used to print the structure of the tree on a two-dimensional plane. In order to keep the implementation as simple as possible, the tree is not printed downward, with the root at the top and the deeper nodes at the bottom, but from left to right, with the root as the first node to the left, while left children grow upward and right ones downward.
+
+For example, consider the construction of the following tree:
+
+```c++
+std::pair<int, int> pair_0=std::make_pair(4, 2);
+std::pair<int, int> pair_1=std::make_pair(10, 7);
+std::pair<int, int> pair_2=std::make_pair(-1, 1);
+std::pair<int, int> pair_3=std::make_pair(0, 1);
+std::pair<int, int> pair_4=std::make_pair(-3, 25);
+std::pair<int, int> pair_5=std::make_pair(6, 12);
+std::pair<int, int> pair_6=std::make_pair(11, 0);
+
+bst<int,int> binary_tree{};
+
+(void)binary_tree.insert(pair_0);
+(void)binary_tree.insert(pair_1);
+(void)binary_tree.insert(pair_2);
+(void)binary_tree.insert(pair_3);
+(void)binary_tree.insert(pair_4);
+(void)binary_tree.insert(pair_5);
+(void)binary_tree.insert(pair_6);
+```
+
+The output of `binary_tree.print_2D();` becomes:
+
+```bash
+                         (-3,25)
+
+               (-1,1)
+
+                         (0,1)
+
+(4,2)
+
+                         (6,12)
+
+               (10,7)
+
+                         (11,0)
+```
+
