@@ -7,7 +7,5 @@ include_directories(exam/cpp/include)
 
 add_executable(AP_Exam
         exam/cpp/include/bst.h
-        exam/cpp/include/iterators.h
         exam/cpp/include/methods.h
-        exam/cpp/include/node.h
         exam/cpp/include/main.cpp)
