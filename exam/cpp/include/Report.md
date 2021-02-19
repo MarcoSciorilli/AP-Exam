@@ -273,11 +273,23 @@ This function is called when the user wants to know the depth of the tree. It re
 
 This function is called when the user wants to know the depth of a given node. It returns an int representing the number of parent of the tree. It does so using the helper function `depth` defined in node.
 
-#### Follow_key_order
+#### *Follow_key_order*
 
 ```c++
-//private
-    node* follow_key_order(const key_type& key, node* N);
+// private
+node* follow_key_order(const key_type& key, node* N);
 ```
 
-This is an helper function used by the functions `insert` and `find`. It is implemented in order to avoid code duplication, as it takes a key and a node as input, and returns a pointer to its child node that follow the order of the keys.
+Since various functions (`_insert()`, `find()`, `find() const`) uses the same lines of code in order to find the proper child of the current node on which to move give a `key`, it seemed more convenient to build a single function for this purpose, so that code duplication can be avoidedReverse dictionary
+
+The purpose of the exercise is to find the reverse of a python *dictionary*: given the keys and the values of a dictionary `d`, a new dictionary `rd` must be created in such a way that the values become the new keys, and the keys the values. This is done by a function, called `reverse_dict()`.
+
+#### *Reverse_dict*
+
+```python
+def reverse_dict(d):
+    new_keys = set([item for sublist in list(d.values()) for item in sublist])
+    return {k: [item[0] for item in list(d.items()) if item[1].count(k) >= 1] for k in new_keys}
+```
+
+The use of list comprehensions helped  to make the code as efficient and short as possible. A first one was exploited to extract the new keys from the original dictionary: the list of the extracted values (that is, the new keys) contains all the elements of all the values of the original dictionary, thus many repetitions probably occur in it. To avoid them, a set of all the new keys is created out of the aforementioned extracted list, using the `set()` function. The function then returns a dictionary: the keys are taken from the previously created set and the values are lists made of those keys of the original dictionary whose values contained the new at least once.
