@@ -51,12 +51,19 @@ The private member `root` is used to identify the root node of the tree in a uni
 #### Insert
 
 ```c++
+//private
+    template<class N>
+    std::pair<typename bst<K, V, CO>::iterator, bool> _insert(N&& x);
 //public
     std::pair<iterator, bool> insert(const pair_type& x);
     std::pair<iterator, bool> insert(pair_type&& x);
 ```
 
-This function is called when the user wants to insert a new node inside the BST. It takes as input an lvalue or an rvalue of a pair key/stored-value, and return an iterator pointing to the node, and a boolean stating the success of the insertion.  If the BST is empty the function insert the node as the root of the tree. Otherwise, the function navigate through the tree until it finds a suitable parent node for the given one. It then compare the key given with the one of the found parent, and set the new node as a *left* or *right* child consequently. If during this process the function finds a node with the same key, it returns an iterator pointing to that node, paired with a *false* boolean.
+This functions are called when the user wants to insert a new node inside the BST. They take as input respectively an lvalue or an rvalue of a pair key/stored-value, and return an iterator pointing to the node, and a boolean stating the success of the insertion, using the helper function `_insert`.
+
+Helper function:
+
+`_insert`: If the BST is empty this function insert the node as the root of the tree. Otherwise, it navigate through the tree until it finds a suitable parent node for the given one. It then compare the key given with the one of the found parent, and set the new node as a *left* or *right* child consequently. The pair key-double is passed to the constructor using `std::forward` to avoid code duplication as it passes variables as lvalue if we use the first `insert` function and as rvalue if we use the second. If during this process the function finds a node with the same key, it returns an iterator pointing to that node, paired with a *false* boolean. 
 
 ####  Begin 
 
@@ -247,4 +254,22 @@ The output of `binary_tree.print_2D();` becomes:
 
                          (11,0)
 ```
+
+#### Max depth
+
+```c++
+//public
+	unsigned int max_depth();
+```
+
+This function is called when the user wants to know the depth of the tree. It returns an int representing the number parents of the node that is the most distant from the root. It does so by checking the distance from the root of all nodes, using the helper function `depth` defined in the node, and finding its maximum.
+
+#### Node depth
+
+```c++
+//public
+    unsigned int node_depth(const key_type& k);
+```
+
+This function is called when the user wants to know the depth of a given node. It returns an int representing the number of parent of the tree. It does so using the helper function `depth` defined in node.
 
