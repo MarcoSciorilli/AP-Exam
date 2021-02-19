@@ -292,7 +292,7 @@ The results are consistent with our expectations, the unordered_map shows an app
 
 We also compared double key types with int key types, we expect that the tree with double keys will take longer to find the same amount of keys, this is confirmed from the graph below, however we expected a bigger difference between the key types.
 
-![key_comparison](./cpp_exam/benchmarks/benchmarks/key_comparison.png)
+![key_comparison](./cpp_exam/benchmarks/key_comparison.png)
 
 
 To produce the same graphs on your machine you can run the `test.sh` script found in the benchmarks folder. The script will compile the `benchmark.cc` code with -O3 optimization, run it and will execute the python script `analisys.py` which will produce the graphs.
