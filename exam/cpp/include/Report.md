@@ -273,3 +273,11 @@ This function is called when the user wants to know the depth of the tree. It re
 
 This function is called when the user wants to know the depth of a given node. It returns an int representing the number of parent of the tree. It does so using the helper function `depth` defined in node.
 
+#### Follow_key_order
+
+```c++
+//private
+    node* follow_key_order(const key_type& key, node* N);
+```
+
+This is an helper function used by the functions `insert` and `find`. It is implemented in order to avoid code duplication, as it takes a key and a node as input, and returns a pointer to its child node that follow the order of the keys.
