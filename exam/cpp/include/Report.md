@@ -1,6 +1,6 @@
 # Binary Search Tree
 
-The project consists in the implementation of a Binary Search Tree (BST), using the C++ programming language. A BST is a data structure used to store data in an organized way, which also allows to quickly retrieve them.  Generally it is made of nodes, each storing a pair: a *key* and a *value*. A BST is ordered hierarchically so that every node is connected to at most to two other below, called children: the *left* and *right* children. Data are stored based on the comparison between keys: given a current observed node and a new one to insert, if the key of the latter is smaller than the one of former, the new datum  is going to populate the left subtree of the current node,  the right subtree otherwise.
+The project consists in the implementation of a Binary Search Tree (BST), using the C++ programming language. A BST is a data structure used to store data in an organized way, which also allows to quickly retrieve them.  Generally it is made of nodes, each storing a pair: a *key* and a *value*. A BST is ordered hierarchically so that every node is connected to at most two other below, called children: the *left* and *right* children. Data are stored based on the comparison between keys: given a current observed node and a new one to insert, if the key of the latter is smaller than the one of former, the new datum  is going to populate the left subtree of the current node, and the right subtree otherwise.
 
 The Binary Search Tree has been implemented in the form of a template class, whose templates are the key type `K`, the value type`V` and the comparison operator type `CO` (set, by default, to ``` std::less<K> ```).  The BST class contains two nested classes, the *node* struct and the *iterator* class, in order to meet the variety of needs associated with this kind of data structure.
 
@@ -119,7 +119,7 @@ Helper functions:
 //private
 	void newbalancedtree(std::vector<pair_type>& v, int first, int last);
 //public
-    void balance();
+	void balance();
 ```
 
 This function is called when the user wants to balance the tree. It stores in an orderly fashion all the node pairs contained in the tree in vector,  it deletes the old tree using the function `clear`, and reconstructs it in a balanced way with the helper function `newbalancedtree`.
@@ -132,7 +132,7 @@ Helper function:
 
 ```c++
 //public
-    bool child_side(const key_type &x);
+	bool child_side(const key_type &x);
 ```
 
 This function takes as input a key of a node, and return a boolean: *false* if the node is a left node, *true* if it is a right node. It achieves so comparing the node pointer with the left and right node pointer of its parent node. 
@@ -141,47 +141,69 @@ This function takes as input a key of a node, and return a boolean: *false* if t
 
 ```c++
 //public
-    iterator find(const key_type& x);
-    const_iterator find(const key_type& x) const;
+	iterator find(const key_type& x);
+	const_iterator find(const key_type& x) const;
 ```
 
-
+This functions are called when the user wants to find a node in the BST with a given key. Of the two functions, the first returns an iterator which points to the node that have the given key, the latter returns a const iterator which also points to the given key. The functions follow the hierarchy of the keys, checking every node, until a match is found. If that key is not found, or the tree is empty, both functions will return `end()` or `cend()` respectively.
 
 #### Copy Semantic
 
+```c++
+//private
+	void clone(const std::unique_ptr<node>& node_to_copy);
+//public    
+	bst(const bst& to_copy) { clone(to_copy.root); }
+	bst& operator=(const bst& to_copy);
 ```
-code
-```
+
+Copy semantics is implemented as a copy constructor and the overload of the operator `=`. It is used to make a deep copy of a binary search tree, with the help of the private function `copy`, which recursively copies all the subtrees of a binary search tree given its root.
 
 #### Move Semantic
 
+```c++
+//public
+	bst(bst&& move_from): root(std::move(move_from.root)) {}
+	bst& operator=(bst&& move_from);
 ```
-code
-```
+
+Move semantics is implemented as a move constructor and the overload of the operator `=`. It is used to move the elements of a binary search tree into another tree, without copying them.
 
 #### Emplace
 
+```c++
+//public
+	template<class... Types>
+    std::pair<iterator,bool> emplace(Types&&... args);
 ```
-code
-```
+
+This function is called when the user wants to insert a new element into the container constructed in-place.  It returns a pair of an iterator pointing to the inserted node and a bool which is true if a new node has been allocated, false if the node is already in the tree. It uses a template so that the user can simply pass two values to this function.
 
 #### Subscripting operator
 
+```c++
+//public
+	reference operator[](const key_type& x);
+    reference operator[](key_type&& x);
 ```
-code
-```
+
+This operator searches for the key given in input. If such key is present in the tree, it returns the value correspondent to that key, if it is not, it inserts the pair made by the given key and a default constructed value using the function `insert`. This operator has been overloaded twice, covering both the cases in which an lvalue or an rvalue is passed to the function.
 
 #### Put-to operator
 
+```c++
+//public
+	friend
+    std::ostream &operator<<(std::ostream &os, const bst &x)
 ```
-code
-```
+
+This function implement the overload of the put-to operator, which lets the user print the tree in ascending order of the keys.
 
 #### *Print_2D*
 
 ```c++
 // public
-void print_2D();
+	void print_2D();
 ```
 
 This function is used to print the structure of the tree on a two-dimensional plane. In order to keep the implementation as simple as possible, the tree is not printed downward, with the root at the top and the deeper nodes at the bottom, but from left to right, with the root as the first node to the left, while left children grow upward and right ones downward.
