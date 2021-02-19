@@ -46,7 +46,7 @@ The private section of the class `bst<K, V, CO>`  contains the struct `node`, th
 
 The private member `root` is used to identify the root node of the tree in a unique way. Since every tree has only one root, it was defined as unique pointer to a node.
 
-### Member functions
+## Member functions
 
 #### Insert
 
@@ -280,7 +280,24 @@ This function is called when the user wants to know the depth of a given node. I
 node* follow_key_order(const key_type& key, node* N);
 ```
 
-Since various functions (`_insert()`, `find()`, `find() const`) uses the same lines of code in order to find the proper child of the current node on which to move give a `key`, it seemed more convenient to build a single function for this purpose, so that code duplication can be avoidedReverse dictionary
+Since various functions (`_insert()`, `find()`, `find() const`) uses the same lines of code in order to find the proper child of the current node on which to move give a `key`, it seemed more convenient to build a single function for this purpose, so that code duplication can be avoided.
+
+## Benchmark
+
+We compared the performance of our binary search tree to the c++ standard library functions std::map and std::unordered_map with integer key and value, the performance metric we used is the time to find 100 randomly drawn keys. We expect that std::map will show a logarithmic time complexity in the size of the container N O(log_{2}{N}) while for std::unordered_map the time complexity is constant O(1). For the unbalanced bst we expect O(log_{2}{N}) on average but O(N) in the worst case (the tree is a linked list), finally for the balanced version of the bst we will always have a time complexity of O(log_{2}{N}. The followind graph shows the time to find 100 keys averaged over 10 measurements with increasing size of the container, the data is obtained by running the code `benchmark.cc` compiled with -O3 optimization
+
+![container_comparison](/home/showreally/Desktop/AP_exam/AP-Exam_Lorenzo/AP-Exam/exam/cpp/benchmarks/container_comparison.png)
+
+The results are consistent with our expectations, the unordered_map shows an approximately constant behaviour and is the fastest container, while the other containers show a logatithmic behaviour, with the balanced bst faster than the unbalanced one.
+
+We also compared double key types with int key types, we expect that the tree with double keys will take longer to find the same amount of keys, this is confirmed from the graph below, however we expected a bigger difference between the key types.
+
+![key_comparison](/home/showreally/Desktop/AP_exam/AP-Exam_Lorenzo/AP-Exam/exam/cpp/benchmarks/key_comparison.png)
+
+
+To produce the same graphs on your machine you can run the `test.sh` script found in the benchmarks folder. The script will compile the `benchmark.cc` code with -O3 optimization, run it and will execute the python script `analisys.py` which will produce the graphs.
+
+# Reverse dictionary
 
 The purpose of the exercise is to find the reverse of a python *dictionary*: given the keys and the values of a dictionary `d`, a new dictionary `rd` must be created in such a way that the values become the new keys, and the keys the values. This is done by a function, called `reverse_dict()`.
 
@@ -293,3 +310,4 @@ def reverse_dict(d):
 ```
 
 The use of list comprehensions helped  to make the code as efficient and short as possible. A first one was exploited to extract the new keys from the original dictionary: the list of the extracted values (that is, the new keys) contains all the elements of all the values of the original dictionary, thus many repetitions probably occur in it. To avoid them, a set of all the new keys is created out of the aforementioned extracted list, using the `set()` function. The function then returns a dictionary: the keys are taken from the previously created set and the values are lists made of those keys of the original dictionary whose values contained the new at least once.
+
