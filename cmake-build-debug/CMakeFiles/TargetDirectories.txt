@@ -1,3 +1,0 @@
-/home/showreally/CLionProjects/AP-Exam/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/showreally/CLionProjects/AP-Exam/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/showreally/CLionProjects/AP-Exam/cmake-build-debug/CMakeFiles/AP_Exam.dir
